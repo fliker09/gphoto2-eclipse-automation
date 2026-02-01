@@ -1,0 +1,9 @@
+# ---------- TESTING: A7SM2 ----------
+01-11 18 01 04 *        /home/astroberry/TSE2024/A7S_II/RPi4/0_sony_partials_v1.sh >> /home/astroberry/TSE2024/A7S_II/RPi4/eclipse.log 2>&1 | logger -t eclipse_a7sm2
+13    18 01 04 *        /home/astroberry/TSE2024/A7S_II/RPi4/1_sony_totality_v1.sh >> /home/astroberry/TSE2024/A7S_II/RPi4/eclipse.log 2>&1 | logger -t eclipse_a7sm2
+21-30 18 01 04 *        /home/astroberry/TSE2024/A7S_II/RPi4/0_sony_partials_v1.sh >> /home/astroberry/TSE2024/A7S_II/RPi4/eclipse.log 2>&1 | logger -t eclipse_a7sm2
+
+# ---------- TESTING: A7M3 ----------
+01-11 18 01 04 *        /home/astroberry/TSE2024/A7_III/RPi4/0_sony_partials_usb_v1.sh      >> /home/astroberry/TSE2024/A7_III/RPi4/eclipse.log 2>&1 | logger -t eclipse_a7m3
+13    18 01 04 *        /home/astroberry/TSE2024/A7_III/RPi4/2_copy_to_shm_v1.sh simulation >> /home/astroberry/TSE2024/A7_III/RPi4/eclipse.log 2>&1 | logger -t eclipse_a7m3
+21-30 18 01 04 *        /home/astroberry/TSE2024/A7_III/RPi4/0_sony_partials_usb_v1.sh      >> /home/astroberry/TSE2024/A7_III/RPi4/eclipse.log 2>&1 | logger -t eclipse_a7m3
