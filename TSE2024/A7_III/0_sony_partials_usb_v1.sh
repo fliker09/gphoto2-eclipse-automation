@@ -13,7 +13,7 @@
 # USB3 capability. As it turned out, while working on SEC2025, I've discovered that
 # it was the cable to blame, it supported only USB2 speeds -_-
 # Unpleasant discovery, but technically speaking, the script experienced no issues,
-# it's just that I've could shot more frames in the same timeframe. Though, for this
+# it's just that I could have taken more shots in the same timeframe. Though, for this
 # script specifically it doesn't quite apply, as we are shooting here partials and
 # nothing else after that, so the number of shot frames wouldn't really change.
 EXTENSION=JPG
@@ -23,10 +23,10 @@ PARTIAL_DURATION=4
 
 # Identify camera's USB port. We are looking specifically for Sony A7 III, using 'III' as
 # the search term. This is deffo not a robust approach! We should use the full camera's name,
-# which can also used in the gphoto2's calls as well (for '--camera' option). The problem is
-# that depending on the name, the 'awk' command needs to adjusted accordingly. '$6' represents
-# column name in the gphoto2 output line. Depending on the csmera's name, this value can change.
-# For the TSE2026 this function needs to be rewritten to make it fully robust for any camera name!
+# which can also be used in the gphoto2's calls as well (for '--camera' option). The problem is
+# that depending on the name, the 'awk' command needs to be adjusted accordingly. '$6' represents
+# column number in the gphoto2 output line, which can change based on the whitespaces in the name.
+# For the TSE2026, this function needs to be rewritten to make it fully robust for any camera name!
 verify_camera_presence()
     {
         # Uncomment the line below to execute the function step by step
@@ -49,7 +49,7 @@ verify_camera_presence()
 # Configure the relevant camera's parameters and ensure that they are properly set!
 # Sony cameras are quite prone to "drift" when setting a parameter, which leads to
 # the value to be set to a neighboring one instead. This is especially problematic
-# with shutter speed value, which is why we try it 10 time instead of 3 times.
+# with shutter speed value, which is why we try it 10 times instead of just 3 times.
 prep_camera()
     {
         # Uncomment the line below to execute the function step by step
@@ -180,7 +180,7 @@ exit_sequence()
 # Save the starting time of the script, which is later used by exit_sequence() function.
 start_time=$(date +%s)
 
-# Check for camera's presence. If it's not connected - give 3 chances to connect it.
+# Check for camera's presence. If it's not connected - give 3 chances to plug it in.
 for i in 1 2 3
 do
     verify_camera_presence
@@ -219,7 +219,7 @@ prep_camera "Continuous Low Speed" "100" "1/1600" "RAW+JPEG (Std)" "partial"
 date +"%Y-%m-%dT%H:%M:%S.%3N%:z"
 echo
 
-# Fire a burst sequence for the desired duration.
+# Fire a burst sequence for the defined duration.
 shoot_frames $PARTIAL_DURATION "partial"
 
 date +"%Y-%m-%dT%H:%M:%S.%3N%:z"

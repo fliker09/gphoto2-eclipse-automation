@@ -5,6 +5,10 @@
 # Uncomment the line below to execute the script step by step (except for functions).
 #trap read debug
 
+# This scripts handles both Baily's Beads and totality shooting. Handling each in its own
+# separate script is a possibility, but it might be risky, in case they clash timing-wise.
+# That's what happened in 2019 and since then I've decided to handle them together.
+
 # For Baily's Beads we shoot a burst sequence. We define here duration in seconds.
 # WARNING: set this value so that the number of shot frames won't overrun camera's buffer.
 BB_DR_DURATION=5
@@ -14,17 +18,17 @@ BB_DR_DURATION=5
 # USB3 capability. As it turned out, while working on SEC2025, I've discovered that
 # it was the cable to blame, it supported only USB2 speeds -_-
 # Unpleasant discovery, but technically speaking, the script experienced no issues,
-# it's just that I've could shot more frames in the same timeframe for totality.
+# it's just that I could have taken more shots in the same timeframe for totality.
 EXTENSION=JPG
 # How many cycles we want to shoot for totality? Each cycle consists of
 # three bracketing sequences, which together create 15 shots with 1EV step.
 # This number is found experimentally. Ensure you have some room after C2 and
 # before C3, so Baily's Beads shooting won't clash with totality shooting!
 TOTALITY_CYCLES=3
-# Define if you want to run production, simulation or testing mode:
-# 1. '1_sony_totality_usb_v1.sh' - this run the script in production mode;
-# 2. '1_sony_totality_usb_v1.sh simulation' - this run the script in simulation mode;
-# 3. '1_sony_totality_usb_v1.sh testing' - this run the script in testing mode;
+# Define if we want to run production, simulation or testing mode:
+# 1. '1_sony_totality_usb_v1.sh' - this runs the script in production mode;
+# 2. '1_sony_totality_usb_v1.sh simulation' - this runs the script in simulation mode;
+# 3. '1_sony_totality_usb_v1.sh testing' - this runs the script in testing mode;
 TEST_RUN=$1
 # Define the duration of your test totality.
 TEST_DURATION=108
@@ -37,10 +41,10 @@ TIMINGS_PATH=/home/astroberry/TSE2024
 
 # Identify camera's USB port. We are looking specifically for Sony A7 III, using 'III' as
 # the search term. This is deffo not a robust approach! We should use the full camera's name,
-# which can also used in the gphoto2's calls as well (for '--camera' option). The problem is
-# that depending on the name, the 'awk' command needs to adjusted accordingly. '$6' represents
-# column name in the gphoto2 output line. Depending on the csmera's name, this value can change.
-# For the TSE2026 this function needs to be rewritten to make it fully robust for any camera name!
+# which can also be used in the gphoto2's calls as well (for '--camera' option). The problem is
+# that, depending on the name, the 'awk' command needs to be adjusted accordingly. '$6' represents
+# column number in the gphoto2 output line, which can change based on the whitespaces in the name.
+# For the TSE2026, this function needs to be rewritten to make it fully robust for any camera name!
 verify_camera_presence()
     {
         # Uncomment the line below to execute the function step by step
@@ -63,7 +67,7 @@ verify_camera_presence()
 # Configure the relevant camera's parameters and ensure that they are properly set!
 # Sony cameras are quite prone to "drift" when setting a parameter, which leads to
 # the value to be set to a neighboring one instead. This is especially problematic
-# with shutter speed value, which is why we try it 10 time instead of 3 times.
+# with shutter speed value, which is why we try it 10 times instead of just 3 times.
 prep_camera()
     {
         # Uncomment the line below to execute the function step by step
@@ -149,9 +153,7 @@ prep_camera()
         #trap - debug
     }
 
-# Shoot either a burst or a bracketing sequence.
-# For this specific script it will be always a burst sequence.
-# Bracketing was mentioned only because this function is used in totality script as well.
+# Shoot either a burst or a bracketing sequence, depending on the phase of the eclipse.
 shoot_frames()
     {
         # Uncomment the line below to execute the function step by step
@@ -198,7 +200,7 @@ start_time=$(date +%s)
 # values of the eclipse timings, we can just simulate values and use them instead. I wish I did
 # this back in 2023 and avoided the disaster -_- Oh well, you fail, you learn!
 # Production and Simulation are basically identical, the difference is only from which files they
-# read the values for the timings. Testing mode calculate the timings based on the current time
+# read the values for the timings. Testing mode calculates the timings based on the current time
 # and the defined variables in the header of the script.
 if [ "$TEST_RUN" == "" ]
 then
@@ -248,7 +250,7 @@ else
     echo
 fi
 
-# Check for camera's presence. If it's not connected - give 3 chances to connect it.
+# Check for camera's presence. If it's not connected - give 3 chances to plug it in.
 for i in 1 2 3
 do
     verify_camera_presence
@@ -291,13 +293,13 @@ echo "Sleeping for $c2_diff seconds..."
 echo
 sleep $c2_diff
 
-# This will be used for reporting the duration on shooting Baily's Beads before C2.
+# This will be used for reporting the duration on shooting Baily's Beads around C2.
 start_time_1=$(date +%s)
 
 date +"%Y-%m-%dT%H:%M:%S.%3N%:z"
 echo
 
-# Shoot the Baily's Beads before C2.
+# Shoot the Baily's Beads around C2.
 shoot_frames $BB_DR_DURATION "BB"
 
 end_time_1=$(date +%s)
@@ -309,7 +311,7 @@ date  +"%Y-%m-%dT%H:%M:%S.%3N%:z"
 echo
 
 # As requested, we are gonna shoot the 15 frames set 3 times. It could have been more,
-# if not for my mistake with the USB cable, as described at the header of the script.
+# if not for my mistake with the USB cable, as described in the header of the script.
 for i in $(seq 1 $TOTALITY_CYCLES)
 do
     prep_camera "Bracketing C 3.0 Steps 5 Pictures" "100" "1/80" "RAW+JPEG (Std)" "totality"
@@ -333,28 +335,28 @@ end_time_2=$(date +%s)
 
 prep_camera "Continuous Low Speed" "100" "1/8000" "RAW+JPEG (Std)" "BB"
 
-# Calculate how much time is left till we have to start shooting Baily's Beads after C3.
+# Calculate how much time is left till we have to start shooting Baily's Beads around C3.
 c3_diff=$(echo "scale=3;$c3_timestamp - $(date +%s.%3N) - 1" | bc)
 
 echo "Sleeping for $c3_diff seconds..."
 echo
 sleep $c3_diff
 
-# This will be used for reporting the duration on shooting Baily'd Beads after C3.
+# This will be used for reporting the duration on shooting Baily'd Beads around C3.
 start_time_3=$(date +%s)
 
 date +"%Y-%m-%dT%H:%M:%S.%3N%:z"
 echo
 
-# Shoot the Baily's Beads after C3.
+# Shoot the Baily's Beads around C3.
 shoot_frames $BB_DR_DURATION "BB"
 
 end_time_3=$(date +%s)
 
 echo
-echo "BBs & DRs before C2 duration: $(( $end_time_1 - $start_time_1 ))"
+echo "BBs & DRs around C2 duration: $(( $end_time_1 - $start_time_1 ))"
 echo
-echo "BBs & DRs after C3 duration: $(( $end_time_3 - $start_time_3 ))"
+echo "BBs & DRs around C3 duration: $(( $end_time_3 - $start_time_3 ))"
 echo
 echo "Totality duration: $(( $end_time_2 - $start_time_2 ))"
 echo
