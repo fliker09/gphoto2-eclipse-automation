@@ -114,7 +114,7 @@ start_time=$(date +%s)
 # invocation (e.g. 1_totality_v1.sh 70) or we read it from the pre-defined file. This approach
 # is convenient for testing the script for a shorter duration without the need to touch the
 # file which stores the production value for the actual eclipse.
-# WARNING: Please use only integer values for the duration.
+# WARNING: Must use only integer values for the duration.
 if [ "$1" != "" ]
 then
     DURATION=$1

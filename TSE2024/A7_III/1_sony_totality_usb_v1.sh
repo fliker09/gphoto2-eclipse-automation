@@ -154,6 +154,8 @@ prep_camera()
     }
 
 # Shoot either a burst or a bracketing sequence, depending on the phase of the eclipse.
+# Regarding the '--bulb' option. On Sony cameras it allows to emulate the pressing of
+# the shutter release button! It is weird, but also very convenient for our purposes.
 shoot_frames()
     {
         # Uncomment the line below to execute the function step by step
@@ -206,8 +208,8 @@ if [ "$TEST_RUN" == "" ]
 then
     echo "Entering production mode!"
     echo
-    c2_timestamp=$(date --date="$(cat "$TIMINGS_PATH"/C2.txt)Z" +'%s.%3N')
-    c3_timestamp=$(date --date="$(cat "$TIMINGS_PATH"/C3.txt)Z" +'%s.%3N')
+    c2_timestamp=$(date --date="$(cat "$TIMINGS_PATH"/C2.txt)" +'%s.%3N')
+    c3_timestamp=$(date --date="$(cat "$TIMINGS_PATH"/C3.txt)" +'%s.%3N')
     if [ "$c2_timestamp" == "" ]
     then
         echo "C2 timings are absent, aborting the script!"
@@ -224,8 +226,8 @@ elif [ "$TEST_RUN" == "simulation" ]
 then
     echo "Entering simulation mode!"
     echo
-    c2_timestamp=$(date --date="$(cat "$TIMINGS_PATH"/SIM_C2.txt)Z" +'%s.%3N')
-    c3_timestamp=$(date --date="$(cat "$TIMINGS_PATH"/SIM_C3.txt)Z" +'%s.%3N')
+    c2_timestamp=$(date --date="$(cat "$TIMINGS_PATH"/SIM_C2.txt)" +'%s.%3N')
+    c3_timestamp=$(date --date="$(cat "$TIMINGS_PATH"/SIM_C3.txt)" +'%s.%3N')
     if [ "$c2_timestamp" == "" ]
     then
         echo "C2 timings are absent, aborting the script!"

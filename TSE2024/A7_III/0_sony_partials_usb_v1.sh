@@ -138,6 +138,8 @@ prep_camera()
 # Shoot either a burst or a bracketing sequence.
 # For this specific script it will be always a burst sequence.
 # Bracketing was mentioned only because this function is used in totality script as well.
+# Regarding the '--bulb' option. On Sony cameras it allows to emulate the pressing of
+# the shutter release button! It is weird, but also very convenient for our purposes.
 shoot_frames()
     {
         # Uncomment the line below to execute the function step by step

@@ -1,16 +1,46 @@
+# ---------- Sony A7 III ----------
+
 # First, let's shoot partial phases. Here we are asking to start shooting on April (04) 1st (01) at
 # 6PM (18), from minute 1 (01) till 11 (11). Shots will be taken every minute, so in total we will
 # get 11 firings of the script responsible for the partial phases of the eclipse.
 # Note: '>>' tells the cron to store the output in the provided file. '2>&1' tells the cron to redirect
 # all errors into the main stream of messages (Unix-alike systems splits normal and error messages).
+
 01-11 18 01 04 *        /home/astroberry/TSE2024/A7_III/0_sony_partials_usb_v1.sh >> /home/astroberry/TSE2024/A7_III/eclipse.log 2>&1
+
 # Next, we want to shoot Baily's Beads and totality. We invoke the corresponding script on
 # April (04) 1st (01) at 6PM (18), at 13th minute mark. We gave here ~2 minute delay after the last
-# partial shooting. Depending on the eclipse timing, you might want to set it longer, at 3 or even
-# 4 minutes. It must enough for the user to remove the filter from the camera and allow the script
-# to prepare the camera for the upcominbg shooting.
+# partial shooting, just to be safe. The eclipse will happen at 15th minute mark, so we have yet
+# another safe gap, which will allow us to remove the solar filter and the script to configure camera.
+# Note: we are using here helper script '2_copy_to_shm_v1.sh' to aleviate the slow main
+# storage of the system (Raspberry Pi running from SD card). In case you are running from NVMe
+# then there should be no need for it and you can invoke '1_sony_totality_usb_v1.sh' instead.
+
 13    18 01 04 *        /home/astroberry/TSE2024/A7_III/2_copy_to_shm_v1.sh >> /home/astroberry/TSE2024/A7_III/eclipse.log 2>&1
+
 # Lastly, shoot partial phases after C3. Here we are asking to start shooting on April (04) 1st (01) at
-# 6PM (18), from minute 17 (17) till 27 (27). Shots will be taken every minute, so in total we will
+# 6PM (18), from minute 19 (19) till 29 (29). Shots will be taken every minute, so in total we will
 # get 11 firings of the script responsible for the partial phases of the eclipse.
-17-27 18 01 04 *        /home/astroberry/TSE2024/A7_III/0_sony_partials_usb_v1.sh >> /home/astroberry/TSE2024/A7_III/eclipse.log 2>&1
+
+19-29 18 01 04 *        /home/astroberry/TSE2024/A7_III/0_sony_partials_usb_v1.sh >> /home/astroberry/TSE2024/A7_III/eclipse.log 2>&1
+
+
+
+# ---------- Sony A7S II ----------
+
+# First, let's shoot partial phases. Here we are asking to start recordings on April (04) 1st (01) at
+# 6PM (18), from minute 1 (01) till 11 (11). Videos will be taken every minute, so in total we will
+# get 11 firings of the script responsible for the partial phases of the eclipse.
+
+01-11 18 01 04 *        /home/astroberry/TSE2024/A7S_II/0_sony_partials_v1.sh >> /home/astroberry/TSE2024/A7S_II/eclipse.log 2>&1
+
+# Video recording will start as soon as the camera is configured by the script, so keep that in
+# mind when setting the video duration. Don't forget to take off the solar filter before that!
+
+13    18 01 04 *        /home/astroberry/TSE2024/A7S_II/1_sony_totality_v1.sh >> /home/astroberry/TSE2024/A7S_II/eclipse.log 2>&1
+
+# Lastly, record partial phases after C3. Here we are asking to start recordings on April (04) 1st (01)
+# at 6PM (18), from minute 19 (19) till 29 (29). Videos will be taken every minute, so in total we will
+# get 11 firings of the script responsible for the partial phases of the eclipse.
+
+19-29 18 01 04 *        /home/astroberry/TSE2024/A7S_II/0_sony_partials_v1.sh >> /home/astroberry/TSE2024/A7S_II/eclipse.log 2>&1
